@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Smart Surveillance</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f0f0f;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #141414;
+            padding: 20px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            border-bottom: 2px solid #222;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .event-box {
+            background: #1e1e1e;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff3b3b;
+            border-radius: 6px;
+        }
+
+        .event-title {
+            font-size: 20px;
+            color: #ff6961;
+            text-transform: none;
+        }
+
+        .timestamp {
+            font-size: 13px;
+            color: #bbbbbb;
+            margin-top: 3px;
+        }
+
+        .empty {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 18px;
+            color: #888;
+        }
+
+        img.snapshot {
+            display: block;
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .meta {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #cfcfcf;
+        }
+    </style>
+</head>
+
+<body>
+    <header>AI Smart Surveillance – Real-Time Alerts</header>
+
+    <div class="container">
+        {% if events %}
+            {% for e in events %}
+                <div class="event-box">
+                    <div class="event-title">⚠ {{ e.event }}</div>
+                    <div class="timestamp">
+                        Time: {{ e.received_at }}
+                    </div>
+
+                    {% if e.image %}
+                    <div>
+                        <img class="snapshot" src="{{ url_for('alert_image', filename=e.image) }}" alt="snapshot">
+                    </div>
+                    {% endif %}
+
+                    {% if e.detections %}
+                    <div class="meta">
+                        Detections:
+                        {% for d in e.detections %}
+                            {{ d.label }} ({{ '%.2f'|format(d.conf) }}){% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">No events yet. Start the detector to begin monitoring.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
